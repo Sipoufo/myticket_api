@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myticket
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    username: sipoufoknj@gmail.com
+    password: hxdd gjcd fieq zppr
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+ticket:
+  app:
+    jwtSecret: MyT!cket@2023:)
+    jwtExpirationMs: 86400000
+
+frontEnd:
+  url: http://localhost:3000/

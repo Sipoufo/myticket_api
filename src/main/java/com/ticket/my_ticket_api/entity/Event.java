@@ -1,6 +1,5 @@
 package com.ticket.my_ticket_api.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,19 +14,25 @@ import java.util.List;
 @Builder
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id", nullable = false)
-    private Long event_id;
+    private Long eventId;
 
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private long start_event;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startEvent;
     @Column(nullable = false)
-    private long end_event;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endEvent;
     private String description;
-    @Column(nullable = false)
     private String location;
+    @Column(nullable = true)
+    private String link;
+    private boolean send_link = false;
+    @Column(nullable = true)
+    private String event_summary;
     private String additional_info;
     private List<String> picture;
     private String event_website;
@@ -37,15 +42,19 @@ public class Event {
     private String event_type;
     private boolean private_listing;
     private boolean show_attendee_count;
-    private boolean is_published;
+    private boolean isPublished = false;
+    private boolean isDeleted = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date create_at = new Date();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date update_at = new Date();
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonIgnore
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "organizer_id", nullable = false)
-    @JsonIgnore
     private Users organizer;
 }

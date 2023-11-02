@@ -1,7 +1,6 @@
 package com.ticket.my_ticket_api.repository;
 
-import com.ticket.my_ticket_api.entity.Ticket;
-import com.ticket.my_ticket_api.entity.Users;
+import com.ticket.my_ticket_api.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,19 +18,45 @@ import static org.junit.jupiter.api.Assertions.*;
 class TicketRepositoryTest {
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     private Users user;
+    private Event event;
 
     @BeforeEach
     void setUp() {
+        Role role = Role
+                .builder()
+                .name(ERole.ROLE_USER)
+                .build();
         this.user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
                 .tickets(new ArrayList<>())
+                .role(role)
+                .build();
+
+
+        Category category = Category
+                .builder()
+                .name("Programming")
+                .build();
+
+        this.event = Event
+                .builder()
+                .name("Billiard part")
+                .description("Billiard part")
+                .startEvent(new Date())
+                .endEvent(new Date())
+                .location("Yassa")
+                .event_type("online")
+                .category(category)
+                .organizer(this.user)
                 .build();
     }
 
@@ -49,6 +75,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
 
@@ -59,6 +86,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(true)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket_2);
 
@@ -75,6 +103,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
         assertNotNull(ticketRepository.save(ticket));
@@ -89,6 +118,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
         assertEquals(ticketRepository.findById(ticket.getTicket_id()).get(), ticket);
@@ -103,6 +133,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
 
@@ -126,6 +157,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
 
@@ -145,6 +177,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticketRepository.save(ticket);
 
@@ -166,6 +199,7 @@ class TicketRepositoryTest {
                 .number_place(10)
                 .visibility(false)
                 .users(new ArrayList<>())
+                .event(this.event)
                 .build();
         ticket.addUser(this.user);
         ticketRepository.save(ticket);
@@ -178,5 +212,43 @@ class TicketRepositoryTest {
 
         assertEquals(1, ticketRepository.findAll().size());
         assertEquals(0, ticketRepository.findById(ticket.getTicket_id()).get().getUsers().size());
+    }
+
+    @Test
+    public void should_delete_tickets_by_event_id() {
+        Ticket ticket = Ticket
+                .builder()
+                .name("Full access")
+                .description("ticket 1 description")
+                .number_place(10)
+                .visibility(false)
+                .users(new ArrayList<>())
+                .event(this.event)
+                .build();
+        ticket.addUser(this.user);
+        ticketRepository.save(ticket);
+
+        assertEquals(1, ticketRepository.findAll().size());
+        ticketRepository.deleteByEventEventId(this.event.getEventId());
+        assertEquals(0, ticketRepository.findAll().size());
+        assertEquals(0, eventRepository.findAll().size());
+    }
+
+    @Test
+    public void should_find_tickets_by_event_id() {
+        Ticket ticket = Ticket
+                .builder()
+                .name("Full access")
+                .description("ticket 1 description")
+                .number_place(10)
+                .visibility(false)
+                .users(new ArrayList<>())
+                .event(this.event)
+                .build();
+        ticket.addUser(this.user);
+        ticketRepository.save(ticket);
+
+        assertEquals(1, ticketRepository.findAll().size());
+        assertEquals(1, ticketRepository.findByEventEventId(this.event.getEventId()).size());
     }
 }

@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -15,7 +15,7 @@ import java.util.Objects;
 @Builder
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id", nullable = false)
     private Long ticket_id;
 
@@ -30,6 +30,15 @@ public class Ticket {
     @Column(nullable = false)
     private int price;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date create_at = new Date();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date update_at = new Date();
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "event_event_id", nullable = false)
+    private Event event;
+
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "Ticket_users",
             joinColumns = @JoinColumn(name = "ticket_ticket_id"),
@@ -37,17 +46,14 @@ public class Ticket {
     private List<Users> users = new ArrayList<>();
 
     public void addUser(Users user) {
-        Users userFind = this.users.stream().filter(t -> Objects.equals(t.getUserId(), user.getUserId())).findFirst().orElse(null);
-        if (userFind == null) {
-            this.users.add(user);
-            user.getTickets().add(this);
-        }
+        this.users.add(user);
+        user.getTickets().add(this);
     }
 
     public void removeUser(long user_id) {
         Users user = this.users.stream().filter(t -> t.getUserId() == user_id).findFirst().orElse(null);
         if (user != null) {
-            System.out.println(this.users.get(0).getFirst_name());
+            System.out.println(this.users.get(0).getFirstName());
             this.getUsers().remove(user);
             user.getTickets().remove(this);
         }

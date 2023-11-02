@@ -97,4 +97,16 @@ class CategoryRepositoryTest {
 
         assertEquals(0, categoryRepository.findAll().size());
     }
+
+    @Test
+    public void should_find_by_name() {
+        Category category = Category
+                .builder()
+                .name("Programming")
+                .build();
+        categoryRepository.save(category);
+
+        Category categoryFind = categoryRepository.findByName(category.getName()).get();
+        assertNotNull(categoryFind);
+    }
 }

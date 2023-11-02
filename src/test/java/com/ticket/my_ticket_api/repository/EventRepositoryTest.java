@@ -2,7 +2,6 @@ package com.ticket.my_ticket_api.repository;
 
 import com.ticket.my_ticket_api.entity.Category;
 import com.ticket.my_ticket_api.entity.Event;
-import com.ticket.my_ticket_api.entity.Ticket;
 import com.ticket.my_ticket_api.entity.Users;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +32,8 @@ class EventRepositoryTest {
     void setUp() {
         this.user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -59,8 +59,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -78,8 +78,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -96,8 +96,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -105,7 +105,7 @@ class EventRepositoryTest {
                 .build();
         eventRepository.save(event);
 
-        assertEquals(eventRepository.findById(event.getEvent_id()).get(), event);
+        assertEquals(eventRepository.findById(event.getEventId()).get(), event);
     }
 
     @Test
@@ -114,8 +114,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -123,14 +123,14 @@ class EventRepositoryTest {
                 .build();
         eventRepository.save(event);
 
-        Event eventFind = eventRepository.findById(event.getEvent_id()).get();
+        Event eventFind = eventRepository.findById(event.getEventId()).get();
         assertEquals(eventFind, event);
 
         eventFind.setName("Programming part");
         eventRepository.save(eventFind);
 
         assertEquals(1, eventRepository.findAll().size());
-        Event checkTicket = eventRepository.findById(event.getEvent_id()).get();
+        Event checkTicket = eventRepository.findById(event.getEventId()).get();
         assertEquals(checkTicket.getName(), "Programming part");
     }
 
@@ -140,8 +140,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -151,7 +151,7 @@ class EventRepositoryTest {
 
         assertEquals(1, eventRepository.findAll().size());
 
-        eventRepository.deleteById(event.getEvent_id());
+        eventRepository.deleteById(event.getEventId());
 
         assertEquals(0, eventRepository.findAll().size());
     }
@@ -162,8 +162,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -181,8 +181,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -200,8 +200,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)
@@ -221,8 +221,8 @@ class EventRepositoryTest {
                 .builder()
                 .name("Billiard part")
                 .description("Billiard part")
-                .start_event(123456789)
-                .end_event(123456789)
+                .startEvent(new Date())
+                .endEvent(new Date())
                 .location("Yassa")
                 .event_type("online")
                 .category(this.category)

@@ -46,8 +46,8 @@ class UserRepositoryTest {
     public void should_find_all_users () {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -57,8 +57,8 @@ class UserRepositoryTest {
 
         Users user_2 = Users
                 .builder()
-                .first_name("spring")
-                .last_name("boot")
+                .firstName("spring")
+                .lastName("boot")
                 .email("springboot@gmail.com")
                 .password("SpringBoot$82")
                 .phone("+237695975167")
@@ -74,8 +74,8 @@ class UserRepositoryTest {
     public void should_create_user() {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -89,8 +89,8 @@ class UserRepositoryTest {
     public void should_find_user_by_id () {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -104,8 +104,8 @@ class UserRepositoryTest {
     public void should_update_user_by_id() {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -116,20 +116,20 @@ class UserRepositoryTest {
         Users userFind = userRepository.findById(user.getUserId()).get();
         assertEquals(userFind, user);
 
-        userFind.setFirst_name("CodePlus");
+        userFind.setFirstName("CodePlus");
         userRepository.save(userFind);
 
         assertEquals(1, userRepository.findAll().size());
         Users checkUser = userRepository.findById(user.getUserId()).get();
-        assertEquals(checkUser.getFirst_name(), "CodePlus");
+        assertEquals(checkUser.getFirstName(), "CodePlus");
     }
 
     @Test
     public void should_delete_user() {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -148,8 +148,8 @@ class UserRepositoryTest {
     public void should_add_ticket() {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
@@ -170,8 +170,8 @@ class UserRepositoryTest {
     public void should_remove_user() {
         Users user = Users
                 .builder()
-                .first_name("BLACKCode")
-                .last_name("Yvan")
+                .firstName("BLACKCode")
+                .lastName("Yvan")
                 .email("blackCode@gmail.com")
                 .password("BlackCodeY$57")
                 .phone("+237695914926")
