@@ -106,7 +106,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>myticket-integration</finalName>
 	</build>
 
 </project>
