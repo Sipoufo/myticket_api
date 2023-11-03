@@ -1,0 +1,22 @@
+node {
+    def WORKSPACE = "/var/lib/jenkins/workspace/Myticket"
+    def dockerImageTag = "Myticket${env.BUILD_NUMBER}"
+
+    try {
+        stage('Clone Repo') {
+            git url: 'https://github.com/Sipoufo/myticket_api.git',
+                credentialsId: 'Myticket$-user',
+                branch: 'main'
+        }
+        stage('Build docker') {
+            dockerImage = docker.build("Myticket:${env.BUILD_NUMBER}")
+        }
+        stage('Deploy docker') {
+            echo "Docker Image Tag Name: ${dockerImageTag}"
+            sh "docker stop Myticket || true && docker rm Myticket || true"
+            sh "docker run --name Myticket -d -p 8000:8000 Myticket:${env.BUILD_NUMBER}"
+        }
+    } catch(e) {
+        throw e
+    }
+}
