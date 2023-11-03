@@ -2,7 +2,6 @@ node {
     def WORKSPACE = "/var/lib/jenkins/workspace/Myticket"
     def dockerImageTag = "myticket-deploy${env.BUILD_NUMBER}"
     try{
-        notifyBuild('STARTED')
         stage('Clone Repo') {
             git url: 'https://github.com/Sipoufo/myticket_api.git',
                 credentialsId: 'github_myticket',
@@ -17,7 +16,6 @@ node {
               sh "docker run --name myticket-deploy -d -p 8080:8080 myticket-deploy:${env.BUILD_NUMBER}"
         }
     }catch(e){
-        currentBuild.result = "FAILED"
         throw e
     }
 }
