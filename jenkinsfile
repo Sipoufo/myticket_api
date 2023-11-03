@@ -1,21 +1,21 @@
-node {
-    def WORKSPACE = "/var/lib/jenkins/workspace/Myticket"
-    def dockerImageTag = "myticket${env.BUILD_NUMBER}"
-
-    try {
-        stage('Clone Repo') {
-            git url: 'https://github.com/Sipoufo/myticket_api.git',
-                branch: 'main'
+pipeline {
+    agent any
+    tools{
+        maven 'maven 3.8.7'
+    }
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Sipoufo/myticket_api.git']])
+                sh 'mvn clean install'
+            }
         }
-        stage('Build docker') {
-            dockerImage = docker.build("Myticket:${env.BUILD_NUMBER}")
+        stage('Build docker image'){
+            steps{
+                script{
+                    sh 'docker build -t javatechie/myticket .'
+                }
+            }
         }
-        stage('Deploy docker') {
-            echo "Docker Image Tag Name: ${dockerImageTag}"
-            sh "docker stop Myticket || true && docker rm Myticket || true"
-            sh "docker run --name Myticket -d -p 8000:8000 Myticket:${env.BUILD_NUMBER}"
-        }
-    } catch(e) {
-        throw e
     }
 }
