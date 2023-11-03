@@ -107,6 +107,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>myticket</finalName>
 	</build>
 
 </project>

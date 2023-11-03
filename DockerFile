@@ -1,15 +1,4 @@
-FROM maven:3-openjdk-17 AS build
-
-WORKDIR /opt/app
-
-COPY ./ /opt/app
-RUN mvn clean install -DskipTests
-
-FROM openjdk:17-jdk-alpine
-
-COPY --from=build /opt/app/target/*.jar app.jar
-
-ENV PORT 8080
-EXPOSE $PORT
-
-ENTRYPOINT ["java", "-jar", "-Xmx1024M", "-Dserver.port=${PORT}", "app.jar"]
+FROM openjdk:8
+EXPOSE 8080
+ADD target/myticket.jar myticket.jar
+ENTRYPOINT ["java","-jar","/myticket.jar"]
