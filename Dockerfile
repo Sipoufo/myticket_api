@@ -6,7 +6,7 @@ RUN mvn clean install -DskipTests
 
 # Run spring boot in Docker
 FROM openjdk:17-jdk
-COPY --from=build /opt/app/target/*.jar myticket-integration.jar
+ADD /opt/app/target/myticket-integration.jar myticket-integration.jar
 ENV PORT 8081
 EXPOSE $PORT
 ENTRYPOINT ["java","-jar","-Xmx1024M","-Dserver.port=${PORT}","myticket-integration.jar"]
