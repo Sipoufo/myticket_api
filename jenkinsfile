@@ -13,7 +13,7 @@ node {
         stage('Deploy docker'){
               echo "Docker Image Tag Name: ${dockerImageTag}"
               sh "docker stop myticket-deploy || true && docker rm myticket-deploy || true"
-              sh "docker run --name myticket-deploy -d -p 8080:8080 myticket-deploy:${env.BUILD_NUMBER}"
+              sh "docker run --net=host --name myticket-deploy -d -p 8080:8080 myticket-deploy:${env.BUILD_NUMBER}"
         }
     }catch(e){
         throw e
