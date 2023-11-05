@@ -30,4 +30,4 @@ ticket:
     jwtExpirationMs: 86400000
 
 frontEnd:
-  url: http://localhost:3000/
+  url: http://51.178.136.89:3000/
