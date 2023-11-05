@@ -196,8 +196,35 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getAllEventsByCategoryId(long categoryId) {
-        return eventRepository.findByCategoryCategoryId(categoryId);
+    public ResponseEntity<?> getAllEventsByCategoryId(Pageable pageable, long categoryId, String token) {
+        Optional<Users> organizer = userService.getUserByToken(token);
+        return organizer.map(users -> ResponseEntity.ok(DataResponse
+                .builder()
+                .actualPage(pageable.getPageNumber() + 1)
+                .dataNumber(eventRepository.findByCategoryCategoryIdAndOrganizerUserIdIsNot(categoryId, users.getUserId(), pageable).size())
+                .data(eventRepository.findByCategoryCategoryId(categoryId, pageable))
+                .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
+                .builder()
+                .actualPage(pageable.getPageNumber() + 1)
+                .dataNumber(eventRepository.findByCategoryCategoryId(categoryId, pageable).size())
+                .data(eventRepository.findByCategoryCategoryId(categoryId, pageable))
+                .build()));
+    }
+
+    @Override
+    public ResponseEntity<?> getSearchEvents(Pageable pageable, String search, String token) {
+        Optional<Users> organizer = userService.getUserByToken(token);
+        return organizer.map(users -> ResponseEntity.ok(DataResponse
+                .builder()
+                .actualPage(pageable.getPageNumber() + 1)
+                .dataNumber(eventRepository.findByNameContainingAndDescriptionContainingAndOrganizerUserIdIsNot(search, search, users.getUserId(), pageable).size())
+                .data(eventRepository.findByNameContainingAndDescriptionContainingAndOrganizerUserIdIsNot(search, search, users.getUserId(), pageable))
+                .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
+                .builder()
+                .actualPage(pageable.getPageNumber() + 1)
+                .dataNumber(eventRepository.findByNameContainingAndDescriptionContaining(search, search, pageable).size())
+                .data(eventRepository.findByNameContainingAndDescriptionContaining(search, search, pageable))
+                .build()));
     }
 
     @Override

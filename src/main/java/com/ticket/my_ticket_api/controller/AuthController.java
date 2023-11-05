@@ -8,6 +8,7 @@ import com.ticket.my_ticket_api.exception.TokenRefreshException;
 import com.ticket.my_ticket_api.payload.request.*;
 import com.ticket.my_ticket_api.payload.response.JwtAuthenticationResponse;
 import com.ticket.my_ticket_api.payload.response.MessageResponse;
+import com.ticket.my_ticket_api.payload.response.TokenVerifyResponse;
 import com.ticket.my_ticket_api.payload.response.UserMachineDetails;
 import com.ticket.my_ticket_api.repository.RoleRepository;
 import com.ticket.my_ticket_api.security.jwt.JwtUtils;
@@ -162,31 +163,53 @@ public class AuthController {
 
     @PostMapping("/verifyAccessToken")
     public ResponseEntity<?> VerifyAccessToken(@RequestHeader (name="Authorization") String token) {
-        boolean isValidated = jwtUtils.validateJwtToken(token);
-
+        boolean isValidated = jwtUtils.validateJwtToken(token.substring(7));
         if (isValidated) {
-            return ResponseEntity.ok(new MessageResponse("Is Valid"));
+            return ResponseEntity
+                .ok()
+                .body(
+                    TokenVerifyResponse
+                        .builder()
+                        .isValid(true)
+                        .message("Is Valid")
+                        .build()
+                );
         }
-
         return ResponseEntity
-                .status(401)
-                .body(new MessageResponse("Is expired"));
+            .ok()
+            .body(
+                TokenVerifyResponse
+                    .builder()
+                    .isValid(false)
+                    .message("Is expired")
+                    .build()
+            );
     }
 
     @PostMapping("/verifyRefreshToken")
     public ResponseEntity<?> VerifyRefreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(refreshTokenRequest.getRefreshToken());
-        if (refreshToken.isEmpty()) {
+        if (refreshToken.isEmpty() || refreshTokenService.verifyExpiration(refreshToken.get()) == null) {
             return ResponseEntity
-                    .status(404)
-                    .body(new MessageResponse("RefreshToken not found"));
+                    .ok()
+                    .body(
+                        TokenVerifyResponse
+                            .builder()
+                            .isValid(false)
+                            .message("RefreshToken not found")
+                            .build()
+                    );
         }
-
-        refreshTokenService.verifyExpiration(refreshToken.get());
 
         return ResponseEntity
                 .ok()
-                .body(new MessageResponse("Is not expired"));
+                .body(
+                    TokenVerifyResponse
+                        .builder()
+                        .isValid(true)
+                        .message("Is not expired")
+                        .build()
+                );
     }
 
     @PostMapping("/refresh")

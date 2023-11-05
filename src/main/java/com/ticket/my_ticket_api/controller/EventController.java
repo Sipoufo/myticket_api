@@ -70,6 +70,18 @@ public class EventController {
         return eventService.getAllEvents(pageable, token);
     }
 
+    @GetMapping("/permit/event/{categoryId}/{pageNumber}/{pageSize}")
+    public ResponseEntity<?> getEventsByCategory(@PathVariable("categoryId") long categoryId, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize, @RequestHeader (name="Authorization") String token) {
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        return eventService.getAllEventsByCategoryId(pageable, categoryId, token);
+    }
+
+    @GetMapping("/permit/event/search/{search}/{pageNumber}/{pageSize}")
+    public ResponseEntity<?> getSearchEvent(@PathVariable("search") String search, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize, @RequestHeader (name="Authorization") String token) {
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        return eventService.getSearchEvents(pageable, search, token);
+    }
+
     @GetMapping("/permit/event/{id}")
     public ResponseEntity<?> getOneEvent(@PathVariable("id") long id) {
         return eventService.getOneEvent(id);

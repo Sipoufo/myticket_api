@@ -15,10 +15,11 @@ public interface EventService {
     public ResponseEntity<?> getAllMyEventsByEndDateLessThanAndIsPublish(Pageable pageable, String token, boolean isPublished);
     public ResponseEntity<?> getAllMyEventsByEndDateGreaterThanAndIsPublish(Pageable pageable, String token, boolean isPublished);
     public ResponseEntity<?> getOneEvent(long eventId);
+    public ResponseEntity<?> getSearchEvents(Pageable pageable, String search, String token);
     public ResponseEntity<?> updateEvent(Event event, long eventId, long categoryId);
     public ResponseEntity<?> deleteEvent(long eventId);
     public List<Event> getAllEventsByOrganizerId(Pageable pageable, long userId);
     public HttpStatus deleteAllEventByOrganizerId(long userId);
-    public List<Event> getAllEventsByCategoryId(long categoryId);
+    public ResponseEntity<?> getAllEventsByCategoryId(Pageable pageable, long categoryId, String token);
     public HttpStatus deleteAllEventByCategoryId(long categoryId);
 }
