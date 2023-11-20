@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "role_id", nullable = false)
     private Long roleId;
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(unique = true, nullable = false)
     private ERole name;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -87,9 +87,11 @@ public class EventController {
         return eventService.getOneEvent(id);
     }
 
-    @PutMapping("/event/{id}")
-    public ResponseEntity<?> updateEvent(@PathVariable("id") long id, @Validated @RequestBody EventDetailRequest eventDetailRequest) throws ParseException {
+    @PutMapping("/event")
+    public ResponseEntity<?> updateEvent(@Validated @RequestBody EventDetailRequest eventDetailRequest) throws ParseException {
+        System.out.println("1111111");
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        System.out.println(formatter);
         Event event = Event
                 .builder()
                 .name(eventDetailRequest.getName())
@@ -112,5 +114,14 @@ public class EventController {
     @DeleteMapping("/event/{id}")
     public ResponseEntity<?> deleteOneEvent(@PathVariable("id") long id) {
         return eventService.deleteEvent(id);
+    }
+
+    @GetMapping("/event/publish/{id}/{publish}")
+    public ResponseEntity<?> publishOneEvent(@PathVariable("id") long id, @PathVariable("publish") boolean publish) {
+        System.out.println("isPublish" + publish);
+        if (publish) {
+            return eventService.publishEvent(id);
+        }
+        return eventService.unPublishEvent(id);
     }
 }

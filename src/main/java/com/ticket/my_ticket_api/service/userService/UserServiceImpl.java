@@ -41,6 +41,9 @@ public class UserServiceImpl implements UserService{
     @Value("${frontEnd.url}")
     private String frontUrl;
 
+    @Value("${frontEnd.admin.url}")
+    private String adminUrl;
+
     @Override
     public HttpStatus createUser(Users user) {
         userRepository.save(user);
@@ -141,6 +144,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Optional<Users> getUserByToken(String token) {
+        System.out.println("token => "+token);
         if (token.length() < 7) {
             return Optional.empty();
         }
@@ -148,46 +152,13 @@ public class UserServiceImpl implements UserService{
             return Optional.empty();
         }
         String email = jwtUtils.getEmailFromJwtToken(token.substring(7));
+        System.out.println("email => "+email);
         return getUserByEmail(email);
     }
 
     @Override
     public Optional<Users> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public HttpStatus addUserByUser(long userId, long ticketId) {
-        Optional<Users> user = userRepository.findById(ticketId);
-
-        if (user.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
-        }
-
-        Optional<Ticket> ticket = ticketRepository.findById(userId);
-        if (ticket.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
-        }
-
-        user.get().addTicket(ticket.get());
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus RemoveUserByUser(long userId, long ticketId) {
-        Optional<Users> user = userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
-        }
-
-        Optional<Ticket> ticket = ticketRepository.findById(userId);
-        if (ticket.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
-        }
-
-        user.get().removeTicket(ticket.get().getTicket_id());
-        return HttpStatus.OK;
     }
 
     @Override
@@ -218,10 +189,12 @@ public class UserServiceImpl implements UserService{
 
         String subject = "Here's the link to reset your password";
 
+        String link = (Objects.equals(user.get().getRole().getName().toString(), "ROLE_ADMIN")) ? adminUrl : frontUrl;
+
         String content = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + frontUrl + token + "\">Change my password</a></p>"
+                + "<p><a href=\"" + link + token + "\">Change my password</a></p>"
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";

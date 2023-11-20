@@ -22,4 +22,6 @@ public interface EventService {
     public HttpStatus deleteAllEventByOrganizerId(long userId);
     public ResponseEntity<?> getAllEventsByCategoryId(Pageable pageable, long categoryId, String token);
     public HttpStatus deleteAllEventByCategoryId(long categoryId);
+    public ResponseEntity<?> publishEvent(long eventId);
+    public ResponseEntity<?> unPublishEvent(long eventId);
 }

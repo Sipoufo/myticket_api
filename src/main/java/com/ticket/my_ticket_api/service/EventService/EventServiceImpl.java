@@ -5,7 +5,9 @@ import com.ticket.my_ticket_api.entity.Event;
 import com.ticket.my_ticket_api.entity.Users;
 import com.ticket.my_ticket_api.payload.response.DataResponse;
 import com.ticket.my_ticket_api.payload.response.MessageResponse;
+import com.ticket.my_ticket_api.payload.response.MissingEventResponse;
 import com.ticket.my_ticket_api.repository.EventRepository;
+import com.ticket.my_ticket_api.repository.TicketBuyRepository;
 import com.ticket.my_ticket_api.service.categoryService.CategoryService;
 import com.ticket.my_ticket_api.service.categoryService.CategoryServiceImpl;
 import com.ticket.my_ticket_api.service.userService.UserService;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,8 @@ public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
     @Autowired
     private final UserService userService = new UserServiceImpl();
+    @Autowired
+    private TicketBuyRepository ticketBuyRepository;
     @Autowired
     private final CategoryService categoryService = new CategoryServiceImpl();
 
@@ -231,5 +236,72 @@ public class EventServiceImpl implements EventService {
     public HttpStatus deleteAllEventByCategoryId(long categoryId) {
         eventRepository.deleteByCategoryCategoryId(categoryId);
         return HttpStatus.OK;
+    }
+
+    @Override
+    public ResponseEntity<?> publishEvent(long eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        List<String> missingElement = new ArrayList<>();
+
+        if (event.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("This event don't exist!"));
+        }
+
+        if (event.get().getName() == null) {
+            missingElement.add("Name missing");
+        }
+        if (event.get().getDescription() == null) {
+            missingElement.add("Description missing");
+        }
+        if (event.get().getStartEvent() == null) {
+            missingElement.add("Start Event missing");
+        }
+        if (event.get().getEndEvent() == null) {
+            missingElement.add("End Event missing");
+        }
+        /*if (event.get().getLocation() == null) {
+            missingElement.add("Location missing");
+        }*/
+        if (event.get().getEvent_summary() == null) {
+            missingElement.add("Event summary missing");
+        }
+        if (event.get().getEvent_type() == null) {
+            missingElement.add("Name missing");
+        }
+        if (event.get().getCategory() == null) {
+            missingElement.add("Category missing");
+        }
+        if (event.get().getOrganizer() == null) {
+            missingElement.add("Organizer missing");
+        }
+
+        if (!missingElement.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(MissingEventResponse
+                            .builder()
+                            .message("You can't publish this event because you have missing fields")
+                            .missingFields(missingElement)
+                            .build());
+        }
+        event.get().setPublished(true);
+        eventRepository.save(event.get());
+        return ResponseEntity.ok("Your event is successful created");
+    }
+
+    @Override
+    public ResponseEntity<?> unPublishEvent(long eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (event.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("This event don't exist!"));
+        }
+        
+        event.get().setPublished(false);
+        eventRepository.save(event.get());
+        return ResponseEntity.ok("Your event is successful unpublish");
     }
 }

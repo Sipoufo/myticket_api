@@ -14,4 +14,6 @@ public class TicketRequest {
     private int number_place;
     private boolean visibility;
     private int price;
+    private long eventId;
+    private long ticketTypeId;
 }

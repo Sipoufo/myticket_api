@@ -3,7 +3,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/myticket
     username: postgres
     password: postgres
+  sql:
+    init:
+      mode: always
   jpa:
+    defer-datasource-initialization: true
     properties:
       hibernate:
         jdbc:
@@ -31,3 +35,5 @@ ticket:
 
 frontEnd:
   url: http://51.178.136.89:3000/
+  admin:
+    url: http://51.178.136.89:3200/

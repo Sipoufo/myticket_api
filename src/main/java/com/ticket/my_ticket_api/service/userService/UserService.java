@@ -24,8 +24,6 @@ public interface UserService {
     public boolean isPhoneExisted(String phone);
     public Optional<Users> getUserByToken(String token);
     public Optional<Users> getUserByEmail(String email);
-    public HttpStatus addUserByUser(long userId, long ticketId);
-    public HttpStatus RemoveUserByUser(long userId, long ticketId);
     public HttpStatus ResetPassword(String oldPassword, String newPassword);
     public List<Users> getAllUsersByRoleId(long roleId);
     public HttpStatus deleteAllUsersByRoleId(long roleId);

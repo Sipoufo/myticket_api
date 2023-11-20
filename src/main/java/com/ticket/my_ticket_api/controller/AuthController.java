@@ -62,17 +62,24 @@ public class AuthController {
                 .browser(userAgent.getBrowser().getName())
                 .operatingSystem(userAgent.getOperatingSystem().getName())
                 .build();
+        System.out.println("Je passe");
 
         Optional<Users> user = userService.getUserByEmail(loginRequest.getUsername());
+        System.out.println("Je passe");
 
         if (user.isEmpty() || !encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email or password error"));
         }
+        System.out.println("Je passe");
+
         String jwt = jwtUtils.generateJwtToken(user.get().getEmail());
+        System.out.println(jwt);
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.get().getEmail(), userMachineDetails);
 
+        System.out.println(refreshToken.getToken());
         return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).user(user.get()).refreshToken(refreshToken.getToken()).firstName(user.get().getFirstName()).build());
     }
 
@@ -80,6 +87,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Validated @RequestBody SignUpRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         String ipAddress = HttpUtils.getClientIp();
+        System.out.println("je passe");
 
         UserMachineDetails userMachineDetails = UserMachineDetails
                 .builder()
@@ -87,12 +95,14 @@ public class AuthController {
                 .browser(userAgent.getBrowser().getName())
                 .operatingSystem(userAgent.getOperatingSystem().getName())
                 .build();
+        System.out.println("je passe");
 
         if (userService.isEmailExisted(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email is already in use!"));
         }
+        System.out.println("je passe 2");
 
         if (userService.isPhoneExisted(signUpRequest.getPhone())) {
             return ResponseEntity
@@ -113,6 +123,7 @@ public class AuthController {
 
         String strRoles = signUpRequest.getRole();
         Role roles = null;
+        System.out.println("je passe3");
 
         if (strRoles == null) {
             roles = roleRepository.findByName(ERole.ROLE_USER)
@@ -126,17 +137,19 @@ public class AuthController {
                         .orElseThrow(() -> new RuntimeException("Role is not found."));
             }
         }
+        System.out.println("je passe 4");
 
         user.setRole(roles);
         user.setToken_validation(jwtUtils.generateJwtTokenValidation(user.getEmail()));
         userService.createUser(user);
+        System.out.println("je passe 5");
 
         String jwt = jwtUtils.generateJwtToken(user.getEmail());
         String subject = "Here's the link for account validation";
         String content = "<p>Hello,</p>"
                 + "<p>Welcome to my ticket.</p>"
                 + "<p>Click the link below to validate your account:</p>"
-                + "<p><a href=\"" + frontUrl + jwt + "\">Change my password.</a></p>";
+                + "<p><a href=\"" + frontUrl + jwt + "\">Validation.</a></p>";
 
         try {
             userService.sendEmail(user.getEmail(), subject, content);
@@ -163,7 +176,9 @@ public class AuthController {
 
     @PostMapping("/verifyAccessToken")
     public ResponseEntity<?> VerifyAccessToken(@RequestHeader (name="Authorization") String token) {
+        System.out.println(token.substring(7));
         boolean isValidated = jwtUtils.validateJwtToken(token.substring(7));
+        System.out.println(isValidated);
         if (isValidated) {
             return ResponseEntity
                 .ok()

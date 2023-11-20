@@ -65,11 +65,11 @@ public class Users {
     @Temporal(TemporalType.TIMESTAMP)
     private Date update_at = new Date();
 
-    @ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    /* @ManyToMany(mappedBy = "users")
     private List<Ticket> tickets = new ArrayList<>();
 
     public void addTicket(Ticket ticket) {
-        Ticket ticketFind = this.tickets.stream().filter(t -> Objects.equals(t.getTicket_id(), ticket.getTicket_id())).findFirst().orElse(null);
+        Ticket ticketFind = this.tickets.stream().filter(t -> Objects.equals(t.getTicketId(), ticket.getTicketId())).findFirst().orElse(null);
         if (ticketFind == null) {
             this.tickets.add(ticket);
             ticket.getUsers().add(this);
@@ -77,12 +77,12 @@ public class Users {
     }
 
     public void removeTicket(long ticket_id) {
-        Ticket ticket = this.tickets.stream().filter(t -> t.getTicket_id() == ticket_id).findFirst().orElse(null);
+        Ticket ticket = this.tickets.stream().filter(t -> t.getTicketId() == ticket_id).findFirst().orElse(null);
         if (ticket != null) {
             this.getTickets().remove(ticket);
             ticket.getUsers().remove(this);
         }
-    }
+    } */
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "roles_role_id")

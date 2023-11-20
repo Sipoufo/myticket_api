@@ -13,11 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Table(name = "ticket")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id", nullable = false)
-    private Long ticket_id;
+    private Long ticketId;
 
     @Column(nullable = false)
     private String name;
@@ -35,19 +36,33 @@ public class Ticket {
     @Temporal(TemporalType.TIMESTAMP)
     private Date update_at = new Date();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "event_event_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "ticket_type_id", nullable = false)
+    private TicketType ticketType;
+
+    /*@ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "Ticket_users", joinColumns = @JoinColumn(name = "ticket_id"))
+    @AttributeOverride(name = "userId", column = @Column(name = "user_id"))
+    private List<Users> users = new ArrayList<>();*/
+
+
+    /* @ManyToMany()
     @JoinTable(name = "Ticket_users",
             joinColumns = @JoinColumn(name = "ticket_ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "user_user_id"))
     private List<Users> users = new ArrayList<>();
 
-    public void addUser(Users user) {
+    public boolean addUser(Users user) {
+        if (this.users.size() == number_place) {
+            return false;
+        }
         this.users.add(user);
         user.getTickets().add(this);
+        return true;
     }
 
     public void removeUser(long user_id) {
@@ -57,6 +72,5 @@ public class Ticket {
             this.getUsers().remove(user);
             user.getTickets().remove(this);
         }
-    }
-
+    } */
 }
