@@ -250,34 +250,40 @@ public class EventServiceImpl implements EventService {
         }
 
         if (event.get().getName() == null) {
+            System.out.println("1");
             missingElement.add("Name missing");
         }
         if (event.get().getDescription() == null) {
+            System.out.println("2");
             missingElement.add("Description missing");
         }
         if (event.get().getStartEvent() == null) {
+            System.out.println("3");
             missingElement.add("Start Event missing");
         }
         if (event.get().getEndEvent() == null) {
+            System.out.println("4");
             missingElement.add("End Event missing");
         }
-        /*if (event.get().getLocation() == null) {
-            missingElement.add("Location missing");
-        }*/
         if (event.get().getEvent_summary() == null) {
+            System.out.println("5");
             missingElement.add("Event summary missing");
         }
         if (event.get().getEvent_type() == null) {
+            System.out.println("6");
             missingElement.add("Name missing");
         }
         if (event.get().getCategory() == null) {
+            System.out.println("7");
             missingElement.add("Category missing");
         }
         if (event.get().getOrganizer() == null) {
+            System.out.println("8");
             missingElement.add("Organizer missing");
         }
 
         if (!missingElement.isEmpty()) {
+            System.out.println(missingElement.size());
             return ResponseEntity
                     .badRequest()
                     .body(MissingEventResponse
@@ -302,6 +308,18 @@ public class EventServiceImpl implements EventService {
         
         event.get().setPublished(false);
         eventRepository.save(event.get());
-        return ResponseEntity.ok("Your event is successful unpublish");
+        return ResponseEntity.ok("Your event is successful unpublished");
+    }
+
+    @Override
+    public ResponseEntity<?> getAllByUserId_admin(long organizerId, Pageable pageable) {
+        return ResponseEntity.ok(DataResponse
+                .builder()
+                .data(eventRepository.findByOrganizerUserId(organizerId, pageable))
+                .dataNumber(eventRepository.findByOrganizerUserId(organizerId, pageable).size())
+                .actualPage(pageable.getPageNumber() + 1)
+                .pageable(pageable)
+                .build()
+        );
     }
 }

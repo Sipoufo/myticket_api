@@ -72,7 +72,7 @@ public class TicketBuyServiceImpl implements TicketBuyService{
     }
 
     @Override
-    public ResponseEntity<?> getTicketBuyByUserId(Pageable pageable, String token) {
+    public ResponseEntity<?> getTicketBuyByToken(Pageable pageable, String token) {
         Optional<Users> user = userService.getUserByToken(token);
         if (user.isEmpty()) {
             return ResponseEntity
@@ -87,6 +87,26 @@ public class TicketBuyServiceImpl implements TicketBuyService{
                     .dataNumber(ticketBuyRepository.findByUserUserId(user.get().getUserId(), pageable).size())
                     .data(ticketBuyRepository.findByUserUserId(user.get().getUserId(), pageable))
                     .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<?> getTicketBuyByUserIs(long userId, Pageable pageable) {
+        Optional<Users> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("User not found !"));
+        }
+
+        return ResponseEntity.ok(
+                DataResponse
+                        .builder()
+                        .actualPage(pageable.getPageNumber() + 1)
+                        .dataNumber(ticketBuyRepository.findByUserUserId(user.get().getUserId(), pageable).size())
+                        .data(ticketBuyRepository.findByUserUserId(user.get().getUserId(), pageable))
+                        .pageable(pageable)
+                        .build()
         );
     }
 

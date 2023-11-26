@@ -1,6 +1,6 @@
 package com.ticket.my_ticket_api.service.userService;
 
-import com.ticket.my_ticket_api.entity.Event;
+import com.ticket.my_ticket_api.entity.ERole;
 import com.ticket.my_ticket_api.entity.Users;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
 import jakarta.mail.MessagingException;
@@ -14,7 +14,9 @@ import java.util.Optional;
 
 public interface UserService {
     public HttpStatus createUser(Users user);
-    public List<Users> getAllUsers(Pageable pageable);
+    public ResponseEntity<?> getAllUsers_admin(Pageable pageable, String token);
+    public ResponseEntity<?> getUsersInfo_admin(String token);
+    // public ResponseEntity<?> getByState(boolean isBlock);
     public ResponseEntity<?> getOneUser(long userId);
     public ResponseEntity<?> getOneUserByToken(String token);
     public HttpStatus updateSUser(Users user, long userId);
@@ -30,6 +32,12 @@ public interface UserService {
     public void sendEmail(String recipientEmail, String subject, String content) throws MessagingException, UnsupportedEncodingException;
 
     //Authentication
+    public ResponseEntity<?> findByRole_customer(String token, Pageable pageable);
     public ResponseEntity<?> forgetPassword(String email) throws MessagingException, UnsupportedEncodingException;
     public ResponseEntity<?> resetPassword(String token, String newPassword, String confirmPassword);
+    public ResponseEntity<?> blockUser(String token, long userId, boolean isBlock);
+
+    public ResponseEntity<?> searchUser(ERole name, String token, String searchWord, Pageable pageable);
+    public ResponseEntity<?> findUserByUserId(String token, long userId);
+
 }

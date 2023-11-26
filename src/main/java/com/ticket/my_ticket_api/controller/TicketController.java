@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -74,7 +73,7 @@ public class TicketController {
     public ResponseEntity<?> getMyTickets(@RequestHeader (name="Authorization") String token, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize)  {
         System.out.println("token => " + token);
         Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
-        return ticketBuyService.getTicketBuyByUserId(pageable, token);
+        return ticketBuyService.getTicketBuyByToken(pageable, token);
     }
 
     @GetMapping("/myTicket/event/{eventId}")

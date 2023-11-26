@@ -1,10 +1,13 @@
 package com.ticket.my_ticket_api.service.userService;
 
-import com.ticket.my_ticket_api.entity.Ticket;
+import com.ticket.my_ticket_api.entity.ERole;
 import com.ticket.my_ticket_api.entity.Users;
 import com.ticket.my_ticket_api.exception.ResourceNotFoundException;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
+import com.ticket.my_ticket_api.payload.response.DataResponse;
 import com.ticket.my_ticket_api.payload.response.MessageResponse;
+import com.ticket.my_ticket_api.payload.response.UsersInfoResponse;
+import com.ticket.my_ticket_api.repository.EventRepository;
 import com.ticket.my_ticket_api.repository.TicketRepository;
 import com.ticket.my_ticket_api.repository.UserRepository;
 import com.ticket.my_ticket_api.security.jwt.JwtUtils;
@@ -43,6 +46,8 @@ public class UserServiceImpl implements UserService{
 
     @Value("${frontEnd.admin.url}")
     private String adminUrl;
+    @Autowired
+    private EventRepository eventRepository;
 
     @Override
     public HttpStatus createUser(Users user) {
@@ -51,8 +56,49 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<Users> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).getContent();
+    public ResponseEntity<?> getAllUsers_admin(Pageable pageable, String token) {
+        Optional<Users> user = getUserByToken(token);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+        if (user.get().getRole().getName() != ERole.ROLE_ADMIN) {return ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("You don't have this privilege !"));
+        }
+        return ResponseEntity.ok(DataResponse
+                .builder()
+                        .data(userRepository.findAll(pageable).getContent())
+                        .dataNumber(userRepository.findAll(pageable).getContent().size())
+                        .actualPage(pageable.getPageNumber() + 1)
+                        .pageable(pageable)
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<?> getUsersInfo_admin(String token) {
+        Optional<Users> user = getUserByToken(token);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+        if (user.get().getRole().getName() != ERole.ROLE_ADMIN) {return ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("You don't have this privilege !"));
+        }
+
+        int userNumber = userRepository.findAll().size();
+        int eventNumber = eventRepository.findAll().size();
+        int ticketNumber = ticketRepository.findAll().size();
+
+        return ResponseEntity.ok(UsersInfoResponse
+                .builder()
+                        .userNumber(userNumber)
+                        .eventNumber(eventNumber)
+                        .ticketNumber(ticketNumber)
+                .build());
     }
 
     @Override
@@ -178,6 +224,23 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public ResponseEntity<?> findByRole_customer(String token, Pageable pageable) {
+        Optional<Users> user = getUserByToken(token);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not administrator !"));
+        }
+        return ResponseEntity.ok(DataResponse
+                .builder()
+                .data(userRepository.findByRoleRoleIdIsNotAndUserIdIsNot(user.get().getRole().getRoleId(), user.get().getUserId(), pageable))
+                .dataNumber(userRepository.findByRoleRoleIdIsNotAndUserIdIsNot(user.get().getRole().getRoleId(), user.get().getUserId(), pageable).size())
+                .actualPage(pageable.getPageNumber() + 1)
+                .pageable(pageable)
+                .build());
+    }
+
+    @Override
     public ResponseEntity<?> forgetPassword(String email) throws MessagingException, UnsupportedEncodingException {
         Optional<Users> user = getUserByEmail(email);
         if (user.isEmpty()) {
@@ -255,5 +318,67 @@ public class UserServiceImpl implements UserService{
 
     public Users getOneUserL(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + email));
+    }
+
+    @Override
+    public ResponseEntity<?> blockUser(String token, long userId, boolean isBlock){
+        System.out.println("Je passe Block");
+        Optional<Users> user1 = getUserByToken(token);
+        if (user1.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not administrator !"));
+        }
+        Optional<Users> user = userRepository.findById(userId);
+        if(user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("User don't found !"));
+        }
+
+        user.get().setDeleted(isBlock);
+        userRepository.save(user.get());
+
+        return ResponseEntity.ok(MessageResponse
+                .builder()
+                .message(isBlock ? "User block" : "User unblock")
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<?> searchUser(ERole name, String token, String searchWord, Pageable pageable) {
+        Optional<Users> user = getUserByToken(token);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not administrator !"));
+        }
+        List<Users> users = userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAndRoleNameIsNotAndUserIdIsNot(searchWord, searchWord, searchWord, name, user.get().getUserId(), pageable);
+        return ResponseEntity.ok(
+                DataResponse
+                        .builder()
+                        .data(users)
+                        .actualPage(pageable.getPageNumber() + 1)
+                        .dataNumber(users.size())
+                        .pageable(pageable)
+                        .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<?> findUserByUserId(String token, long userId) {
+        Optional<Users> user1 = getUserByToken(token);
+        if (user1.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not administrator !"));
+        }
+        Optional<Users> user = userRepository.findByUserId(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+        return ResponseEntity.ok(user.get());
     }
 }

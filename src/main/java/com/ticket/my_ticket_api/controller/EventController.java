@@ -124,4 +124,10 @@ public class EventController {
         }
         return eventService.unPublishEvent(id);
     }
+
+    @GetMapping("/event/user/{id}/{pageNumber}/{pageSize}")
+    public ResponseEntity<?> getAllTicketByUserId(@PathVariable("id") long id, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        return eventService.getAllByUserId_admin(id, pageable);
+    }
 }
