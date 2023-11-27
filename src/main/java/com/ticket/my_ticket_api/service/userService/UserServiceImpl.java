@@ -4,6 +4,7 @@ import com.ticket.my_ticket_api.entity.ERole;
 import com.ticket.my_ticket_api.entity.Users;
 import com.ticket.my_ticket_api.exception.ResourceNotFoundException;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
+import com.ticket.my_ticket_api.payload.response.AdminsInfoResponse;
 import com.ticket.my_ticket_api.payload.response.DataResponse;
 import com.ticket.my_ticket_api.payload.response.MessageResponse;
 import com.ticket.my_ticket_api.payload.response.UsersInfoResponse;
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService{
                 .body(new MessageResponse("You don't have this privilege !"));
         }
 
-        int userNumber = userRepository.findAll().size();
+        int userNumber = userRepository.findByRoleNameIsNotAndUserIdIsNot(ERole.ROLE_ADMIN, user.get().getUserId()).size();
         int eventNumber = eventRepository.findAll().size();
         int ticketNumber = ticketRepository.findAll().size();
 
@@ -98,6 +99,31 @@ public class UserServiceImpl implements UserService{
                         .userNumber(userNumber)
                         .eventNumber(eventNumber)
                         .ticketNumber(ticketNumber)
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<?> getAdminsInfo_admin(String token) {
+        Optional<Users> user = getUserByToken(token);
+        if (user.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+        if (user.get().getRole().getName() != ERole.ROLE_ADMIN) {return ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("You don't have this privilege !"));
+        }
+
+        int adminNumber = userRepository.findByRoleName(ERole.ROLE_ADMIN).size();
+        int adminActiveNumber = userRepository.findByRoleNameAndIsDeleted(ERole.ROLE_ADMIN, false).size();
+        int adminBlockNumber = userRepository.findByRoleNameAndIsDeleted(ERole.ROLE_ADMIN, true).size();
+
+        return ResponseEntity.ok(AdminsInfoResponse
+                .builder()
+                        .adminNumber(adminNumber)
+                        .adminActiveNumber(adminActiveNumber)
+                        .adminBlockNumber(adminBlockNumber)
                 .build());
     }
 
@@ -224,20 +250,31 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<?> findByRole_customer(String token, Pageable pageable) {
+    public ResponseEntity<?> findByRole_customer(boolean isForAdmin, String token, Pageable pageable) {
         Optional<Users> user = getUserByToken(token);
         if (user.isEmpty()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("You are not administrator !"));
         }
-        return ResponseEntity.ok(DataResponse
-                .builder()
-                .data(userRepository.findByRoleRoleIdIsNotAndUserIdIsNot(user.get().getRole().getRoleId(), user.get().getUserId(), pageable))
-                .dataNumber(userRepository.findByRoleRoleIdIsNotAndUserIdIsNot(user.get().getRole().getRoleId(), user.get().getUserId(), pageable).size())
-                .actualPage(pageable.getPageNumber() + 1)
-                .pageable(pageable)
-                .build());
+
+        if (isForAdmin) {
+            return ResponseEntity.ok(DataResponse
+                    .builder()
+                    .data(userRepository.findByRoleNameIsNotAndUserIdIsNot(ERole.ROLE_USER, user.get().getUserId(), pageable))
+                    .dataNumber(userRepository.findByRoleNameIsNotAndUserIdIsNot(ERole.ROLE_USER, user.get().getUserId(), pageable).size())
+                    .actualPage(pageable.getPageNumber() + 1)
+                    .pageable(pageable)
+                    .build());
+        } else {
+            return ResponseEntity.ok(DataResponse
+                    .builder()
+                    .data(userRepository.findByRoleNameIsNotAndUserIdIsNot(ERole.ROLE_ADMIN, user.get().getUserId(), pageable))
+                    .dataNumber(userRepository.findByRoleNameIsNotAndUserIdIsNot(ERole.ROLE_ADMIN, user.get().getUserId(), pageable).size())
+                    .actualPage(pageable.getPageNumber() + 1)
+                    .pageable(pageable)
+                    .build());
+        }
     }
 
     @Override

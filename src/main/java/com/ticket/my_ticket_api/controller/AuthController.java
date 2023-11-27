@@ -164,6 +164,70 @@ public class AuthController {
         return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).user(user).refreshToken(refreshToken.getToken()).firstName(user.getFirstName()).build());
     }
 
+    @PostMapping("/createAdmin")
+    public ResponseEntity<?> createAdmin(@Validated @RequestBody SignUpRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        String ipAddress = HttpUtils.getClientIp();
+
+        UserMachineDetails userMachineDetails = UserMachineDetails
+                .builder()
+                .ipAddress(ipAddress)
+                .browser(userAgent.getBrowser().getName())
+                .operatingSystem(userAgent.getOperatingSystem().getName())
+                .build();
+        System.out.println("je passe ++");
+        System.out.println(userService.isEmailExisted(signUpRequest.getEmail()));
+        System.out.println("je passe ++");
+
+        if (userService.isEmailExisted(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Email is already in use!"));
+        }
+        System.out.println("je passe 2");
+
+        if (userService.isPhoneExisted(signUpRequest.getPhone())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Phone is already in use!"));
+        }
+        System.out.println(signUpRequest.getPassword());
+
+        // Create new user's account
+        String password = "ChaIOçh@pT!chEt#2023";
+        Users user = Users
+                .builder()
+                .firstName(signUpRequest.getFirstName())
+                .lastName(signUpRequest.getLastName())
+                .email(signUpRequest.getEmail())
+                .phone(signUpRequest.getPhone())
+                .password(encoder.encode(password))
+                .role(roleRepository.findByName(ERole.ROLE_ADMIN).get())
+                .build();
+
+        user.setToken_validation(jwtUtils.generateJwtTokenValidation(user.getEmail()));
+        userService.createUser(user);
+        System.out.println("je passe 5");
+
+        String jwt = jwtUtils.generateJwtToken(user.getEmail());
+        String subject = "Your admin identify";
+        String content = "<p>Hello, "+signUpRequest.getFirstName()+"</p>"
+                + "<p>Welcome to my chapchapTicket.</p>"
+                + "<p>Your password is: "+password+"</p>";
+
+        try {
+            userService.sendEmail(user.getEmail(), subject, content);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Connection problem please try later!"));
+        }
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail(), userMachineDetails);
+
+        return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).user(user).refreshToken(refreshToken.getToken()).firstName(user.getFirstName()).build());
+    }
+
     @PostMapping("/forgetPassword")
     public ResponseEntity<?> forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest) throws MessagingException, UnsupportedEncodingException {
         return userService.forgetPassword(forgetPasswordRequest.getEmail());

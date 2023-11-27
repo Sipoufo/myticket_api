@@ -32,16 +32,21 @@ public class UsersController {
         return userService.getAllUsers_admin(pageable, token);
     }
 
-    @GetMapping("/customer/{pageNumber}/{pageSize}")
-    public ResponseEntity<?> getAllCustomer(@RequestHeader (name="Authorization") String token, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
+    @GetMapping("/customer/{isForAdmin}/{pageNumber}/{pageSize}")
+    public ResponseEntity<?> getAllCustomer(@RequestHeader (name="Authorization") String token, @PathVariable("isForAdmin") boolean isForAdmin, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
         System.out.println("Je passe 4");
         Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
-        return userService.findByRole_customer(token, pageable);
+        return userService.findByRole_customer(isForAdmin, token, pageable);
     }
 
     @GetMapping("/userInfo")
     public ResponseEntity<?> getUsersInfo_admin(@RequestHeader (name="Authorization") String token) {
         return userService.getUsersInfo_admin(token);
+    }
+
+    @GetMapping("/adminInfo")
+    public ResponseEntity<?> getAdminsInfo_admin(@RequestHeader (name="Authorization") String token) {
+        return userService.getAdminsInfo_admin(token);
     }
 
     @GetMapping("/userInfo/{userId}")

@@ -16,7 +16,7 @@ public interface UserService {
     public HttpStatus createUser(Users user);
     public ResponseEntity<?> getAllUsers_admin(Pageable pageable, String token);
     public ResponseEntity<?> getUsersInfo_admin(String token);
-    // public ResponseEntity<?> getByState(boolean isBlock);
+    public ResponseEntity<?> getAdminsInfo_admin(String token);
     public ResponseEntity<?> getOneUser(long userId);
     public ResponseEntity<?> getOneUserByToken(String token);
     public HttpStatus updateSUser(Users user, long userId);
@@ -32,7 +32,7 @@ public interface UserService {
     public void sendEmail(String recipientEmail, String subject, String content) throws MessagingException, UnsupportedEncodingException;
 
     //Authentication
-    public ResponseEntity<?> findByRole_customer(String token, Pageable pageable);
+    public ResponseEntity<?> findByRole_customer(boolean isForAdmin, String token, Pageable pageable);
     public ResponseEntity<?> forgetPassword(String email) throws MessagingException, UnsupportedEncodingException;
     public ResponseEntity<?> resetPassword(String token, String newPassword, String confirmPassword);
     public ResponseEntity<?> blockUser(String token, long userId, boolean isBlock);
