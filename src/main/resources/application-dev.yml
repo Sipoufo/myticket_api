@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/myticket
     username: postgres
-    password: postgres
+    password: qwertyuiop
   sql:
     init:
       mode: always
@@ -36,6 +36,6 @@ ticket:
     jwtExpirationMs: 86400000
 
 frontEnd:
-  url: http://localhost:3000/
+  url: http://localhost:3001/
   admin:
     url: http://localhost:3000/

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/myticket
     username: postgres
-    password: postgres
+    password: qwertyuiop
   sql:
     init:
       mode: always
