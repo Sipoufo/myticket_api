@@ -133,8 +133,6 @@ public class TicketServiceImpl implements TicketService{
 
         return ResponseEntity.ok(DataResponse
                 .builder()
-                .actualPage(0)
-                .dataNumber(ticketRepository.findByEventEventId(eventId).size())
                 .data(ticketRepository.findByEventEventId(eventId))
                 .build()
         );

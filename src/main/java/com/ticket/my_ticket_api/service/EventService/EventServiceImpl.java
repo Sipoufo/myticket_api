@@ -68,8 +68,8 @@ public class EventServiceImpl implements EventService {
         return organizer.map(users -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
-                .dataNumber(eventRepository.findByOrganizerUserIdIsNot(users.getUserId(), pageable).size())
-                .data(eventRepository.findByOrganizerUserIdIsNot(users.getUserId(), pageable))
+                .dataNumber(eventRepository.findByOrganizerUserIdIsNotAndIsDeletedFalse(users.getUserId(), pageable).size())
+                .data(eventRepository.findByOrganizerUserIdIsNotAndIsDeletedFalse(users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
@@ -84,8 +84,8 @@ public class EventServiceImpl implements EventService {
         return organizer.map(users -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
-                .dataNumber(eventRepository.findByIsPublishedAndOrganizerUserId(isPublished, users.getUserId(), pageable).size())
-                .data(eventRepository.findByIsPublishedAndOrganizerUserId(isPublished, users.getUserId(), pageable))
+                .dataNumber(eventRepository.findByIsPublishedAndOrganizerUserIdAndIsDeletedFalse(isPublished, users.getUserId(), pageable).size())
+                .data(eventRepository.findByIsPublishedAndOrganizerUserIdAndIsDeletedFalse(isPublished, users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .build()));
@@ -97,8 +97,8 @@ public class EventServiceImpl implements EventService {
         return organizer.map(users -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
-                .dataNumber(eventRepository.findByEndEventLessThanAndIsPublishedAndOrganizerUserId(new Date(), isPublished, users.getUserId(), pageable).size())
-                .data(eventRepository.findByEndEventLessThanAndIsPublishedAndOrganizerUserId(new Date(), isPublished, users.getUserId(), pageable))
+                .dataNumber(eventRepository.findByEndEventLessThanAndIsPublishedAndOrganizerUserIdAndIsDeletedFalse(new Date(), isPublished, users.getUserId(), pageable).size())
+                .data(eventRepository.findByEndEventLessThanAndIsPublishedAndOrganizerUserIdAndIsDeletedFalse(new Date(), isPublished, users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .build()));
@@ -110,8 +110,8 @@ public class EventServiceImpl implements EventService {
         return organizer.map(users -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
-                .dataNumber(eventRepository.findByStartEventGreaterThanAndIsPublishedAndOrganizerUserId(new Date(), isPublished, users.getUserId(), pageable).size())
-                .data(eventRepository.findByStartEventGreaterThanAndIsPublishedAndOrganizerUserId(new Date(), isPublished, users.getUserId(), pageable))
+                .dataNumber(eventRepository.findByStartEventGreaterThanAndIsPublishedAndOrganizerUserIdAndIsDeletedFalse(new Date(), isPublished, users.getUserId(), pageable).size())
+                .data(eventRepository.findByStartEventGreaterThanAndIsPublishedAndOrganizerUserIdAndIsDeletedFalse(new Date(), isPublished, users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .build()));
@@ -123,8 +123,8 @@ public class EventServiceImpl implements EventService {
         return organizer.map(users -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
-                .dataNumber(eventRepository.findByOrganizerUserId(users.getUserId(), pageable).size())
-                .data(eventRepository.findByOrganizerUserId(users.getUserId(), pageable))
+                .dataNumber(eventRepository.findByOrganizerUserIdAndIsDeletedFalse(users.getUserId(), pageable).size())
+                .data(eventRepository.findByOrganizerUserIdAndIsDeletedFalse(users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .build()));
@@ -168,7 +168,6 @@ public class EventServiceImpl implements EventService {
         event1.get().setEvent_type(event.getEvent_type());
         event1.get().setPrivate_listing(event.isPrivate_listing());
         event1.get().setShow_attendee_count(event.isShow_attendee_count());
-        event1.get().setPublished(event.isPublished());
         event1.get().setCategory(category.get());
         event1.get().setUpdate_at(new Date());
 
@@ -191,7 +190,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getAllEventsByOrganizerId(Pageable pageable, long userId) {
-        return eventRepository.findByOrganizerUserId(userId, pageable);
+        return eventRepository.findByOrganizerUserIdAndIsDeletedFalse(userId, pageable);
     }
 
     @Override
@@ -315,8 +314,8 @@ public class EventServiceImpl implements EventService {
     public ResponseEntity<?> getAllByUserId_admin(long organizerId, Pageable pageable) {
         return ResponseEntity.ok(DataResponse
                 .builder()
-                .data(eventRepository.findByOrganizerUserId(organizerId, pageable))
-                .dataNumber(eventRepository.findByOrganizerUserId(organizerId, pageable).size())
+                .data(eventRepository.findByOrganizerUserIdAndIsDeletedFalse(organizerId, pageable))
+                .dataNumber(eventRepository.findByOrganizerUserIdAndIsDeletedFalse(organizerId, pageable).size())
                 .actualPage(pageable.getPageNumber() + 1)
                 .pageable(pageable)
                 .build()
