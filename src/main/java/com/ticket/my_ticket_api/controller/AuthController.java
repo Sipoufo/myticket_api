@@ -62,20 +62,22 @@ public class AuthController {
                 .browser(userAgent.getBrowser().getName())
                 .operatingSystem(userAgent.getOperatingSystem().getName())
                 .build();
-        System.out.println("Je passe");
 
         Optional<Users> user = userService.getUserByEmail(loginRequest.getUsername());
-        System.out.println("Je passe");
 
         if (user.isEmpty() || !encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email or password error"));
         }
-        System.out.println("Je passe");
+
+        if (user.get().isDeleted()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Your are blocked"));
+        }
 
         String jwt = jwtUtils.generateJwtToken(user.get().getEmail());
-        System.out.println(jwt);
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.get().getEmail(), userMachineDetails);
 

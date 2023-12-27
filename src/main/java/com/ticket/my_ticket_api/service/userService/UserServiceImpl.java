@@ -3,6 +3,7 @@ package com.ticket.my_ticket_api.service.userService;
 import com.ticket.my_ticket_api.entity.ERole;
 import com.ticket.my_ticket_api.entity.Users;
 import com.ticket.my_ticket_api.exception.ResourceNotFoundException;
+import com.ticket.my_ticket_api.payload.request.UserCrucialInfo;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
 import com.ticket.my_ticket_api.payload.response.AdminsInfoResponse;
 import com.ticket.my_ticket_api.payload.response.DataResponse;
@@ -189,6 +190,34 @@ public class UserServiceImpl implements UserService{
         user1.get().setCode_postal(user.getCode_postal());
         user1.get().setState(user.getState());
         userRepository.save(user1.get());
+        return ResponseEntity.ok(MessageResponse.builder().message("Your profile is successful updated").build());
+    }
+
+    public ResponseEntity<?> updateCrucialInfoUser(UserCrucialInfo userCrucialInfo, String token) {
+        Optional<Users> user1 = getUserByToken(token);
+        if (user1.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+
+        String subject = "Email / Password updated";
+        String content = "<p>Hello </p>" + user1.get().getFirstName()
+                + "<p>Your email / password has been updated successfully</p>";
+
+        String email = userCrucialInfo.getEmail() != null ? userCrucialInfo.getEmail() : user1.get().getEmail();
+        user1.get().setEmail(email);
+        user1.get().setPassword(userCrucialInfo.getPassword() != null ? encoder.encode(userCrucialInfo.getPassword()) : user1.get().getPassword());
+
+        userRepository.save(user1.get());
+
+        try {
+            sendEmail(email, subject, content);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Connection problem please try later!"));
+        }
         return ResponseEntity.ok(MessageResponse.builder().message("Your profile is successful updated").build());
     }
 

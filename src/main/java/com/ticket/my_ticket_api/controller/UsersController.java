@@ -1,6 +1,7 @@
 package com.ticket.my_ticket_api.controller;
 
 import com.ticket.my_ticket_api.entity.ERole;
+import com.ticket.my_ticket_api.payload.request.UserCrucialInfo;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
 import com.ticket.my_ticket_api.service.userService.UserService;
 import com.ticket.my_ticket_api.service.userService.UserServiceImpl;
@@ -23,6 +24,11 @@ public class UsersController {
     @PutMapping("")
     public ResponseEntity<?> updateOneUserByToken(@RequestBody UserSetting userSetting, @RequestHeader (name="Authorization") String token) {
         return userService.updateSettingUser(userSetting, token);
+    }
+
+    @PutMapping("/crucial")
+    public ResponseEntity<?> updateUserCrucialInfoByToken(@RequestBody UserCrucialInfo userCrucialInfo, @RequestHeader (name="Authorization") String token) {
+        return userService.updateCrucialInfoUser(userCrucialInfo, token);
     }
 
     @GetMapping("/{pageNumber}/{pageSize}")
