@@ -2,6 +2,7 @@ package com.ticket.my_ticket_api.service.userService;
 
 import com.ticket.my_ticket_api.entity.ERole;
 import com.ticket.my_ticket_api.entity.Users;
+import com.ticket.my_ticket_api.payload.request.UserCrucialInfo;
 import com.ticket.my_ticket_api.payload.request.UserSetting;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public interface UserService {
     public ResponseEntity<?> getOneUserByToken(String token);
     public HttpStatus updateSUser(Users user, long userId);
     public ResponseEntity<?> updateSettingUser(UserSetting user, String token);
+    public ResponseEntity<?> updateCrucialInfoUser(UserCrucialInfo userCrucialInfo, String token);
     public HttpStatus deleteUser(long userId);
     public boolean isEmailExisted(String email);
     public boolean isPhoneExisted(String phone);
