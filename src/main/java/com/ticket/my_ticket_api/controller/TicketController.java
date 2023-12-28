@@ -30,6 +30,11 @@ public class TicketController {
         return ticketService.getAllTicketsByEventId(eventId);
     }
 
+    @GetMapping("/oneTicket/{ticketId}")
+    public ResponseEntity<?> getOneTicket(@PathVariable("ticketId") long ticketId) {
+        return ticketService.getOneTicket(ticketId);
+    }
+
     @PostMapping("/{eventId}")
     public ResponseEntity<?> createEvent(@PathVariable("eventId") long eventId, @Validated @RequestBody TicketRequest ticketRequest) {
         Ticket ticket = Ticket
