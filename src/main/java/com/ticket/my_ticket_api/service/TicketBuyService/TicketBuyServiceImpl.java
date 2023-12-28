@@ -4,10 +4,7 @@ import com.ticket.my_ticket_api.entity.Event;
 import com.ticket.my_ticket_api.entity.Ticket;
 import com.ticket.my_ticket_api.entity.TicketBuy;
 import com.ticket.my_ticket_api.entity.Users;
-import com.ticket.my_ticket_api.payload.response.DataResponse;
-import com.ticket.my_ticket_api.payload.response.TicketEventResponse;
-import com.ticket.my_ticket_api.payload.response.MessageResponse;
-import com.ticket.my_ticket_api.payload.response.OneTicketResponse;
+import com.ticket.my_ticket_api.payload.response.*;
 import com.ticket.my_ticket_api.repository.EventRepository;
 import com.ticket.my_ticket_api.repository.TicketBuyRepository;
 import com.ticket.my_ticket_api.repository.TicketRepository;
@@ -53,7 +50,7 @@ public class TicketBuyServiceImpl implements TicketBuyService{
         }
 
         Pageable pageable = PageRequest.of(1, ticket.get().getNumber_place());
-        List<TicketBuy> ticketBuys = ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId(), pageable);
+        List<UserTicketBuy> ticketBuys = ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId(), pageable);
         if (ticketBuys.size() + numberPlace > ticket.get().getNumber_place()) {
             return ResponseEntity
                     .badRequest()
@@ -159,12 +156,27 @@ public class TicketBuyServiceImpl implements TicketBuyService{
                     .body(new MessageResponse("Ticket not found !"));
         }
 
+        List<UserTicketBuy> userTicketBuyResponses = ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId(), pageable);
+
+        List<UserTicketBuyResponse> ticketBuys = new ArrayList<>();
+
+        for (int i = 0; i < userTicketBuyResponses.size(); i++) {
+            Optional<Users> users = userRepository.findById(userTicketBuyResponses.get(i).getUserId());
+            if (users.isPresent()) {
+                ticketBuys.add(UserTicketBuyResponse
+                        .builder()
+                                .ticketCount(userTicketBuyResponses.get(i).getTicketCount())
+                                .user(users.get())
+                        .build());
+            }
+        }
+
         return ResponseEntity.ok(
                 DataResponse
                         .builder()
                         .actualPage(pageable.getPageNumber() + 1)
-                        .dataNumber(ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId(), pageable).size())
-                        .data(ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId(), pageable))
+                        .dataNumber(ticketBuys.size())
+                        .data(ticketBuys)
                         .build()
         );
     }
