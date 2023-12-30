@@ -9,4 +9,5 @@ public interface TicketBuyService {
     public ResponseEntity<?> getTicketBuyByUserIs(long userId, Pageable pageable);
     public ResponseEntity<?> getTicketBuyByUserIdAndEventId(long eventId, String token);
     public ResponseEntity<?> getTicketBuyByTicketId(Pageable pageable, long ticketId);
+    public ResponseEntity<?> getNumberTicketBuyByTicketId(long ticketId);
 }

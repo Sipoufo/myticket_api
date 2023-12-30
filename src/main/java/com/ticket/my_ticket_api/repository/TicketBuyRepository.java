@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TicketBuyRepository extends JpaRepository<TicketBuy, Long> {
@@ -16,6 +17,8 @@ public interface TicketBuyRepository extends JpaRepository<TicketBuy, Long> {
     List<TicketBuy> findByUserUserId(@Param("userId") Long userId, Pageable pageable);
     @Query(value = "SELECT COUNT (*) AS ticketCount, user_id AS userId FROM ticket_buy WHERE ticket_id = :ticketId GROUP BY user_id", nativeQuery = true)
     List<UserTicketBuy> findByTicketTicketId(@Param("ticketId") Long ticketId, Pageable pageable);
+    @Query(value = "SELECT COUNT (*) AS ticketCount FROM ticket_buy WHERE ticket_id = :ticketId", nativeQuery = true)
+    Map<String, Integer> findByTicketTicketId(@Param("ticketId") Long ticketId);
     List<TicketBuy> findByTicketTicketIdAndUserUserId(long ticketId, long userId);
     List<TicketBuy> findByTicketTicketIdAndUserUserId(Long ticketId, Long userId, Pageable pageable);
 }
