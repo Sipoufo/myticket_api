@@ -27,4 +27,9 @@ public class TicketBuyController {
         Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
         return ticketBuyService.getTicketBuyByTicketId(pageable, id);
     }
+
+    @GetMapping("/numberTicketBuy/{ticketId}")
+    public ResponseEntity<?> getNumberTicketBuy(@PathVariable("ticketId") long ticketId) {
+        return ticketBuyService.getNumberTicketBuyByTicketId(ticketId);
+    }
 }

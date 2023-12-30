@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -179,5 +180,18 @@ public class TicketBuyServiceImpl implements TicketBuyService{
                         .data(ticketBuys)
                         .build()
         );
+    }
+
+    public ResponseEntity<?> getNumberTicketBuyByTicketId(long ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Ticket not found !"));
+        }
+
+        Map<String, Integer> userTicketBuyResponses = ticketBuyRepository.findByTicketTicketId(ticket.get().getTicketId());
+
+        return ResponseEntity.ok(userTicketBuyResponses);
     }
 }
