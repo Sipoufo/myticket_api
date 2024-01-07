@@ -206,7 +206,7 @@ public class EventServiceImpl implements EventService {
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
                 .dataNumber(eventRepository.findByCategoryCategoryIdAndOrganizerUserIdIsNot(categoryId, users.getUserId(), pageable).size())
-                .data(eventRepository.findByCategoryCategoryId(categoryId, pageable))
+                .data(eventRepository.findByCategoryCategoryIdAndOrganizerUserIdIsNot(categoryId, users.getUserId(), pageable))
                 .build())).orElseGet(() -> ResponseEntity.ok(DataResponse
                 .builder()
                 .actualPage(pageable.getPageNumber() + 1)
