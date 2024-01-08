@@ -23,13 +23,13 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/requestOrganizer")
+@RequestMapping("/api")
 public class RequestOrganiserController {
     @Autowired
     private RequestOrganiserService requestOrganiserService = new RequestOrganiserServiceImpl();
     private FileNameHelper fileHelper = new FileNameHelper();
 
-    @PostMapping("")
+    @PostMapping("/requestOrganizer")
     public ResponseEntity<?> createRequest(@RequestParam("cni_face") MultipartFile cni_face, @RequestParam("cni_back") MultipartFile cni_back, @RequestHeader (name="Authorization") String token) {
         OrganizerRequest organizerRequest = OrganizerRequest
                 .builder()
@@ -40,7 +40,7 @@ public class RequestOrganiserController {
         return requestOrganiserService.save(organizerRequest, token, fileHelper);
     }
 
-    @GetMapping("/{pageNumber}/{pageSize}")
+    @GetMapping("/requestOrganizer/{pageNumber}/{pageSize}")
     public ResponseEntity<?> getAllRequest(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize, @RequestHeader (name="Authorization") String token) {
         System.out.println("Je passe");
 

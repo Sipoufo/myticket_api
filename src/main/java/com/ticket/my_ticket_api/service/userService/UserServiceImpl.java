@@ -144,6 +144,16 @@ public class UserServiceImpl implements UserService{
         return ResponseEntity.ok(userRepository.findById(organizer.get().getUserId()));
     }
 
+    public ResponseEntity<?> getUserType(String token){
+        Optional<Users> organizer = getUserByToken(token);
+        if (organizer.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("You are not authenticate !"));
+        }
+        return ResponseEntity.ok(userRepository.findById(organizer.get().getUserId()).get().getEStateOrganiser());
+    }
+
     @Override
     public HttpStatus updateSUser(Users user, long userId) {
         Optional<Users> user1 = userRepository.findById(userId);

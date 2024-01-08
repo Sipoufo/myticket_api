@@ -20,6 +20,7 @@ public interface UserService {
     public ResponseEntity<?> getAdminsInfo_admin(String token);
     public ResponseEntity<?> getOneUser(long userId);
     public ResponseEntity<?> getOneUserByToken(String token);
+    public ResponseEntity<?> getUserType(String token);
     public HttpStatus updateSUser(Users user, long userId);
     public ResponseEntity<?> updateSettingUser(UserSetting user, String token);
     public ResponseEntity<?> updateCrucialInfoUser(UserCrucialInfo userCrucialInfo, String token);
