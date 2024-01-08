@@ -2,5 +2,5 @@ package com.ticket.my_ticket_api.entity;
 
 public enum ERole {
     ROLE_USER,
-    ROLE_ADMIN
+    ROLE_ADMIN,
 }
