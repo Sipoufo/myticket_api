@@ -1,9 +1,6 @@
 package com.ticket.my_ticket_api.controller;
 
-import com.ticket.my_ticket_api.entity.ERole;
-import com.ticket.my_ticket_api.entity.RefreshToken;
-import com.ticket.my_ticket_api.entity.Role;
-import com.ticket.my_ticket_api.entity.Users;
+import com.ticket.my_ticket_api.entity.*;
 import com.ticket.my_ticket_api.exception.TokenRefreshException;
 import com.ticket.my_ticket_api.payload.request.*;
 import com.ticket.my_ticket_api.payload.response.JwtAuthenticationResponse;
@@ -121,6 +118,7 @@ public class AuthController {
                 .email(signUpRequest.getEmail())
                 .phone(signUpRequest.getPhone())
                 .password(encoder.encode(signUpRequest.getPassword()))
+                .eStateOrganiser(EStateOrganiser.NOT_ORGANISER)
                 .build();
 
         String strRoles = signUpRequest.getRole();

@@ -60,29 +60,14 @@ public class Users {
     @Column(nullable = true)
     private boolean isDeleted = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EStateOrganiser eStateOrganiser = EStateOrganiser.NOT_ORGANISER;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_at = new Date();
     @Temporal(TemporalType.TIMESTAMP)
     private Date update_at = new Date();
-
-    /* @ManyToMany(mappedBy = "users")
-    private List<Ticket> tickets = new ArrayList<>();
-
-    public void addTicket(Ticket ticket) {
-        Ticket ticketFind = this.tickets.stream().filter(t -> Objects.equals(t.getTicketId(), ticket.getTicketId())).findFirst().orElse(null);
-        if (ticketFind == null) {
-            this.tickets.add(ticket);
-            ticket.getUsers().add(this);
-        }
-    }
-
-    public void removeTicket(long ticket_id) {
-        Ticket ticket = this.tickets.stream().filter(t -> t.getTicketId() == ticket_id).findFirst().orElse(null);
-        if (ticket != null) {
-            this.getTickets().remove(ticket);
-            ticket.getUsers().remove(this);
-        }
-    } */
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "roles_role_id")
