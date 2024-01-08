@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface RequestOrganiserService {
     public ResponseEntity<?> save(OrganizerRequest organizerRequest, String token, FileNameHelper helper);
-    public ResponseEntity<List<RequestOrganiser>> fetchAllRequestOrganiser(Pageable pageable);
+    public List<RequestOrganiser> fetchAllRequestOrganiser(Pageable pageable);
     public ResponseEntity<?> resolveRequest(OrganizerRequestResolve organizerRequestResolve, Long requestId);
 }

@@ -71,8 +71,8 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
     }
 
     @Override
-    public ResponseEntity<List<RequestOrganiser>> fetchAllRequestOrganiser(Pageable pageable) {
-        return ResponseEntity.ok(requestOrganiserRepository.findAll(pageable).getContent());
+    public List<RequestOrganiser> fetchAllRequestOrganiser(Pageable pageable) {
+        return requestOrganiserRepository.findAll(pageable).getContent();
     }
 
     @Override
