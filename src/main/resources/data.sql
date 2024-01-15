@@ -1,9 +1,12 @@
 INSERT INTO role (name) VALUES ('ROLE_USER');
 INSERT INTO role (name) VALUES ('ROLE_ADMIN');
 
-INSERT INTO category (name) VALUES ('Art');
-INSERT INTO category (name) VALUES ('Design');
-INSERT INTO category (name) VALUES ('Game');
+INSERT INTO category (name) VALUES ('Concert / humor');
+INSERT INTO category (name) VALUES ('Party / family');
+INSERT INTO category (name) VALUES ('Conference / business');
+INSERT INTO category (name) VALUES ('Sport');
+INSERT INTO category (name) VALUES ('Evening');
+INSERT INTO category (name) VALUES ('Other');
 
 INSERT INTO ticket_type (name) VALUES ('Pay');
 
