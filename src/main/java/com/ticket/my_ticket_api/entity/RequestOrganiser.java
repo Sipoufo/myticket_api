@@ -1,5 +1,6 @@
 package com.ticket.my_ticket_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,10 +23,15 @@ public class RequestOrganiser {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cni_face_id", nullable = false)
+    @JsonIgnore
     private Image CNIFace;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cni_back_id", nullable = false)
+    @JsonIgnore
     private Image CNIBack;
+
+    private String CNIFaceName;
+    private String CNIBackName;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)

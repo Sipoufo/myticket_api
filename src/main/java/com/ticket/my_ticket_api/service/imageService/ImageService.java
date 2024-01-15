@@ -10,4 +10,6 @@ public interface ImageService {
     public Image save(Image image);
 
     public Optional<Image> findById(Long imageId);
+
+    public Image findByFileName(String fileName);
 }

@@ -38,16 +38,18 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
                     .badRequest()
                     .body(new MessageResponse("User don't exist!"));
         }
-        String fileName = helper.generateDisplayName(organizerRequest.getCni_face().getOriginalFilename());
+        String fileName_face = helper.generateDisplayName(organizerRequest.getCni_face().getOriginalFilename());
 
         // CNI Face
         Image cni_face = Image.build();
-        cni_face.setName(fileName);
+        cni_face.setName(fileName_face);
         cni_face.setFiles(organizerRequest.getCni_face());
 
+
+        String fileName_back = helper.generateDisplayName(organizerRequest.getCni_back().getOriginalFilename());
         // CNI Back
         Image cni_back = Image.build();
-        cni_face.setName(fileName);
+        cni_face.setName(fileName_back);
         cni_face.setFiles(organizerRequest.getCni_back());
 
         try {
@@ -65,6 +67,8 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
                 .CNIFace(cni_face)
                 .CNIBack(cni_back)
                 .user(user.get())
+                .CNIFaceName(fileName_face)
+                .CNIBackName(fileName_back)
                 .build();
 
         return ResponseEntity.ok(requestOrganiserRepository.save(requestOrganiser));
