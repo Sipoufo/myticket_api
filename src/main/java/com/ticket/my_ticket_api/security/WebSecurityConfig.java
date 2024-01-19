@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/permit/**").permitAll()
                         .requestMatchers("/api/category").permitAll()
+                        .requestMatchers("/api/show/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

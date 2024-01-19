@@ -49,8 +49,8 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
         String fileName_back = helper.generateDisplayName(organizerRequest.getCni_back().getOriginalFilename());
         // CNI Back
         Image cni_back = Image.build();
-        cni_face.setName(fileName_back);
-        cni_face.setFiles(organizerRequest.getCni_back());
+        cni_back.setName(fileName_back);
+        cni_back.setFiles(organizerRequest.getCni_back());
 
         try {
             cni_face.setData(organizerRequest.getCni_face().getBytes());
