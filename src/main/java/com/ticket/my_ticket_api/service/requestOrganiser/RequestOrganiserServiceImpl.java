@@ -87,7 +87,7 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
                     .badRequest()
                     .body(new MessageResponse("Request don't exist!"));
         }
-
+        System.out.println("Request = " + organizerRequestResolve.isAccepted());
         requestOrganiser.get().setMessage(organizerRequestResolve.getMessage());
         requestOrganiser.get().setAccepted(organizerRequestResolve.isAccepted());
 

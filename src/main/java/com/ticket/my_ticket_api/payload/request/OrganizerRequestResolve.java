@@ -1,7 +1,6 @@
 package com.ticket.my_ticket_api.payload.request;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -9,6 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Builder
 public class OrganizerRequestResolve {
-    private boolean isAccepted;
+    private boolean accepted;
     private String message;
 }
