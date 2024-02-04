@@ -1,5 +1,6 @@
 package com.ticket.my_ticket_api.service.requestOrganiser;
 
+import com.ticket.my_ticket_api.entity.EStateOrganiser;
 import com.ticket.my_ticket_api.entity.Image;
 import com.ticket.my_ticket_api.entity.RequestOrganiser;
 import com.ticket.my_ticket_api.entity.Users;
@@ -8,6 +9,7 @@ import com.ticket.my_ticket_api.payload.request.OrganizerRequest;
 import com.ticket.my_ticket_api.payload.request.OrganizerRequestResolve;
 import com.ticket.my_ticket_api.payload.response.MessageResponse;
 import com.ticket.my_ticket_api.repository.RequestOrganiserRepository;
+import com.ticket.my_ticket_api.repository.UserRepository;
 import com.ticket.my_ticket_api.service.imageService.ImageService;
 import com.ticket.my_ticket_api.service.imageService.ImageServiceImpl;
 import com.ticket.my_ticket_api.service.userService.UserService;
@@ -25,6 +27,8 @@ import java.util.Optional;
 public class RequestOrganiserServiceImpl implements RequestOrganiserService{
     @Autowired
     private final UserService userService = new UserServiceImpl();
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private RequestOrganiserRepository requestOrganiserRepository;
     @Autowired
@@ -87,7 +91,15 @@ public class RequestOrganiserServiceImpl implements RequestOrganiserService{
                     .badRequest()
                     .body(new MessageResponse("Request don't exist!"));
         }
-        System.out.println("Request = " + organizerRequestResolve.isAccepted());
+        Optional<Users> users = userService.getUserByEmail(requestOrganiser.get().getUser().getEmail());
+        if (users.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("User don't exist!"));
+        }
+        users.get().setEStateOrganiser(EStateOrganiser.ORGANISER);
+        userRepository.save(users.get());
+
         requestOrganiser.get().setMessage(organizerRequestResolve.getMessage());
         requestOrganiser.get().setAccepted(organizerRequestResolve.isAccepted());
 
